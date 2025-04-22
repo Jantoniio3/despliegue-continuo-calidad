@@ -14,8 +14,10 @@
 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 <java.version>21</java.version>
 <selenium.version>4.30.0</selenium.version>
+<docker.image.prefix>es.codeurjc.web</docker.image.prefix> <!-- Define el prefijo de la imagen Docker -->
 </properties>
 <dependencies>
+<!-- Spring Boot Dependencies -->
 <dependency>
 <groupId>org.springframework.boot</groupId>
 <artifactId>spring-boot-starter-mustache</artifactId>
@@ -27,29 +29,32 @@
 <dependency>
 <groupId>org.springframework.boot</groupId>
 <artifactId>spring-boot-devtools</artifactId>
+<scope>runtime</scope> <!-- Devtools solo debe usarse en tiempo de ejecución -->
 </dependency>
-<!--  SPRING TEST DEPENDENCIES  -->
+<!-- Spring Test Dependencies -->
 <dependency>
 <groupId>org.springframework.boot</groupId>
 <artifactId>spring-boot-starter-test</artifactId>
 <scope>test</scope>
 </dependency>
-<!--  SELENIUM DEPENDENCIES  -->
+<!-- Selenium Dependencies -->
 <dependency>
 <groupId>org.seleniumhq.selenium</groupId>
 <artifactId>selenium-java</artifactId>
 <version>${selenium.version}</version>
 <scope>test</scope>
 </dependency>
+<!-- AssertJ Dependencies -->
 <dependency>
 <groupId>org.assertj</groupId>
 <artifactId>assertj-core</artifactId>
-<version>3.8.0</version>
+<version>3.24.2</version> <!-- Actualiza a una versión más reciente -->
 <scope>test</scope>
 </dependency>
 </dependencies>
 <build>
 <plugins>
+<!-- Spring Boot Maven Plugin -->
 <plugin>
 <groupId>org.springframework.boot</groupId>
 <artifactId>spring-boot-maven-plugin</artifactId>
