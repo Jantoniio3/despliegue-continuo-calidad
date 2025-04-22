@@ -83,10 +83,8 @@ public class PostControllerTest {
 
 		// WHEN
 		createPostAux("Ivan", "Vendo moto azul", "Muy barata");
-	
 		this.wait.until(ExpectedConditions.textToBe(By.id("message"), "Post has been saved"));
 		
-
 		driver.findElement(By.linkText("Back to board")).click();
 		driver.findElement(By.partialLinkText("Vendo moto azul")).click();
 		driver.findElement(By.id("delete-post")).click();
@@ -97,7 +95,6 @@ public class PostControllerTest {
 		assertThrows(NoSuchElementException.class, () -> {
 			driver.findElement(By.linkText("Ivan - Vendo moto azul"));
 		});
-
 	}
 
 	private void createPostAux(String username, String title, String text) {
@@ -109,4 +106,5 @@ public class PostControllerTest {
 
 		driver.findElement(By.id("save-post")).click();
 	}
+
 }
