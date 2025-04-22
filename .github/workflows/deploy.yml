@@ -35,7 +35,7 @@ jobs:
       - name: Run tests
         run: mvn test      
       - name: Generate Docker image
-        run: mvn -X spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=${{ secrets.DOCKERHUB_USERNAME }}/posts:latest
+        run: mvn -X spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=${{ secrets.DOCKERHUB_USERNAME }}/despliegue:latest
       - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
