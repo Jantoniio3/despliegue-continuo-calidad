@@ -9,10 +9,10 @@ on:
       branches:
         - main
          
-
 permissions:
   id-token: write
   contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,13 +24,18 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
       - name: Run tests
-        run: mvn test      
+        run: mvn test
+      - name: Get version from pom.xml
+        id: get_version
+        run: |
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
       - name: Generate Docker image
-        run: mvn spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=${{ secrets.DOCKERHUB_USERNAME }}/posts:latest
+        run: mvn spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=${{ secrets.DOCKERHUB_USERNAME }}/posts:${{ env.VERSION }}
       - name: Login to DockerHub
-        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}" 
+        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}"
       - name: Push image to DockerHub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/posts:latest
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/posts:${{ env.VERSION }}
         
   deploy:
     runs-on: ubuntu-latest
@@ -47,7 +52,7 @@ jobs:
           az container create \
             --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
             --name posts \
-            --image ${{ secrets.DOCKERHUB_USERNAME }}/posts:latest \
+            --image ${{ secrets.DOCKERHUB_USERNAME }}/posts:${{ env.VERSION }} \
             --registry-login-server index.docker.io \
             --registry-username ${{ secrets.DOCKERHUB_USERNAME }} \
             --registry-password ${{ secrets.DOCKERHUB_READ_TOKEN }} \
@@ -55,4 +60,4 @@ jobs:
             --ports 8080 \
             --os-type Linux \
             --cpu 1 \
-            --memory 1.5 \
+            --memory 1.5
