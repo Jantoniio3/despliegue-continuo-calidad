@@ -1,14 +1,12 @@
 name: Continuous Deployment - Run Azure Login with OIDC
 on:
-    workflow_dispatch:
-
-    push:
-      paths:
-        - src/**
-        - pom.xml
-      branches:
-        - main
-         
+  workflow_dispatch:
+  push:
+    paths:
+      - src/**
+      - pom.xml
+    branches:
+      - main
 
 permissions:
   id-token: write
@@ -25,10 +23,15 @@ jobs:
           java-version: '21'
       - name: Run tests
         run: mvn test      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Generate Docker image
         run: mvn spring-boot:build-image -DskipTests -Dspring-boot.build-image.imageName=${{ secrets.DOCKERHUB_USERNAME }}/posts:latest
       - name: Login to DockerHub
-        run: docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" -p "${{ secrets.DOCKERHUB_TOKEN }}" 
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Push image to DockerHub
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/posts:latest
         
@@ -62,4 +65,4 @@ jobs:
             --ports 8080 \
             --os-type Linux \
             --cpu 1 \
-            --memory 1.5 \
+            --memory 1.5Gi
